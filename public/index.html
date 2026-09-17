@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0a0a0b" />
+    <title>JARVIS</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar" aria-label="История диалогов">
+        <header class="sidebar-header">
+          <div class="brand-row">
+            <a class="brand" href="#chat" aria-label="JARVIS — к диалогу">
+              <span class="brand-mark" aria-hidden="true"><span></span></span>
+              <span class="brand-copy">
+                <strong>JARVIS</strong>
+                <small>Персональный ассистент</small>
+              </span>
+            </a>
+            <button class="icon-button history-close" id="history-close" type="button" aria-label="Закрыть историю" title="Закрыть историю">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17" /></svg>
+            </button>
+          </div>
+
+          <button class="new-chat" id="new-chat" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+            <span>Новый диалог</span>
+            <kbd>Ctrl N</kbd>
+          </button>
+        </header>
+
+        <button class="crypto-nav-item" id="crypto-open" type="button" aria-label="Open persistent Crypto conversation" disabled>
+          <span class="crypto-mark" aria-hidden="true">C</span>
+          <span class="crypto-heading-copy">
+            <strong>Crypto</strong>
+            <small id="crypto-status">Scanner starting</small>
+          </span>
+          <span class="crypto-live-dot" aria-hidden="true"></span>
+        </button>
+
+        <button class="parser-nav-item" id="parser-open" type="button" aria-label="Open Telegram Lead Radar">
+          <span class="parser-mark" aria-hidden="true">P</span>
+          <span class="parser-heading-copy">
+            <strong>Parser</strong>
+            <small id="parser-sidebar-status">Lead Radar · Starting</small>
+          </span>
+          <span class="parser-live-dot" aria-hidden="true"></span>
+          <span class="parser-sidebar-metrics" aria-label="Parser lead metrics"><b id="parser-leads-today">0</b><small>leads</small><b id="parser-hot-leads">0</b><small>hot</small></span>
+        </button>
+
+        <nav class="conversation-nav" aria-label="Недавние диалоги">
+          <div class="conversation-heading"><span class="section-label">Недавние</span></div>
+          <label class="history-search-wrap" for="history-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6" /><path d="m16 16 4 4" /></svg>
+            <span class="visually-hidden">Поиск диалогов</span>
+            <input id="history-search" type="search" placeholder="Поиск диалогов" autocomplete="off" />
+          </label>
+          <div class="history-list" id="history-list" role="list" aria-live="polite"></div>
+        </nav>
+
+        <div class="sidebar-spacer"></div>
+
+        <div class="sidebar-danger-zone">
+          <button class="delete-all-button" id="delete-all-threads" type="button" aria-haspopup="dialog" aria-controls="delete-all-dialog">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5" /></svg>
+            <span>Удалить все диалоги</span>
+          </button>
+        </div>
+
+        <section class="safety-card" aria-label="Состояние безопасности">
+          <div class="safety-heading">
+            <span class="safety-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.7 2.9 8.1 7 10 4.1-1.9 7-5.3 7-10V6l-7-3Z" /><path d="m9 12 2 2 4-4" /></svg>
+            </span>
+            <strong>Защищённый режим</strong>
+          </div>
+          <p>Рискованные действия выполняются только после вашего подтверждения.</p>
+          <div class="safety-status"><span aria-hidden="true"></span>Защита включена</div>
+        </section>
+
+        <footer class="sidebar-footer">Все действия под контролем</footer>
+      </aside>
+
+      <button class="history-backdrop" id="history-backdrop" type="button" aria-label="Закрыть историю" hidden></button>
+
+      <main class="workspace" id="chat">
+        <header class="workspace-bar">
+          <div class="workspace-title-group">
+            <button class="icon-button history-open" id="history-open" type="button" aria-label="Открыть историю" aria-controls="sidebar" aria-expanded="false" title="Открыть историю">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14" /></svg>
+            </button>
+            <strong class="workspace-title" id="conversation-title">Новый разговор</strong>
+          </div>
+
+          <div class="workspace-actions">
+            <div class="status" id="status" data-state="idle" role="status" aria-live="polite">
+              <span class="status-dot" aria-hidden="true"></span>
+              <span class="status-text">Готов к работе</span>
+            </div>
+            <button class="icon-button activity-open" id="activity-open" type="button" aria-label="Открыть активность" aria-controls="activity-panel" aria-expanded="false" title="Открыть активность" hidden>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 16V9M10 16V5M15 16v-4M20 16V7" /></svg>
+            </button>
+          </div>
+        </header>
+
+        <section class="parser-workspace" id="parser-workspace" aria-label="Parser · Telegram Lead Radar" hidden>
+          <div class="parser-loading" role="status">Loading Lead Radar…</div>
+        </section>
+
+        <div class="chat-scroll" id="chat-scroll">
+          <div class="chat-content">
+            <section class="welcome" id="welcome" aria-labelledby="welcome-title">
+              <div class="assistant-orb" aria-hidden="true"><span></span></div>
+              <h1 id="welcome-title">Что сделаем сегодня?</h1>
+              <p class="welcome-copy">Найду актуальную информацию, разберу ваши файлы и помогу выполнить действие на компьютере.</p>
+
+              <div class="suggestion-grid" id="quick-suggestions" aria-label="Быстрые действия">
+                <button class="suggestion-card" type="button" data-prompt="Найди на рабочем столе файл по названию ">
+                  <span class="suggestion-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7.5h6l2 2h8v9.5H4V7.5Z" /><path d="m15.5 14.5 1.7 1.7 3-3" /></svg></span>
+                  <span class="suggestion-copy"><strong>Найти файл</strong><small>Поиск на компьютере</small></span>
+                  <span class="suggestion-arrow" aria-hidden="true">↗</span>
+                </button>
+
+                <button class="suggestion-card" type="button" data-prompt="Проверь содержимое папки test-workspace и кратко опиши его.">
+                  <span class="suggestion-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h9l5 5v11H5V4Z" /><path d="M14 4v5h5M8 14h8M8 17h5" /></svg></span>
+                  <span class="suggestion-copy"><strong>Разобрать папку</strong><small>Сводка по содержимому</small></span>
+                  <span class="suggestion-arrow" aria-hidden="true">↗</span>
+                </button>
+
+                <button class="suggestion-card" type="button" data-prompt="Найди в интернете свежую информацию о ">
+                  <span class="suggestion-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" /><path d="M4 12h16M12 4a13 13 0 0 1 0 16M12 4a13 13 0 0 0 0 16" /></svg></span>
+                  <span class="suggestion-copy"><strong>Поиск в интернете</strong><small>Актуальные источники</small></span>
+                  <span class="suggestion-arrow" aria-hidden="true">↗</span>
+                </button>
+
+                <button class="suggestion-card" type="button" data-prompt="Создай новую пустую папку в test-workspace с названием ">
+                  <span class="suggestion-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7.5h6l2 2h8v9.5H4V7.5Z" /><path d="M12 12v5M9.5 14.5h5" /></svg></span>
+                  <span class="suggestion-copy"><strong>Создать папку</strong><small>В тестовой области</small></span>
+                  <span class="suggestion-arrow" aria-hidden="true">↗</span>
+                </button>
+              </div>
+            </section>
+
+            <section class="crypto-context" id="crypto-context" aria-label="Crypto runtime and controls" hidden>
+              <div class="crypto-log-panel">
+                <div class="crypto-log-heading"><strong>Crypto logs</strong><small>События и решения</small></div>
+                <ol class="crypto-event-stream" id="crypto-event-stream" aria-label="Meaningful Crypto system events" aria-live="polite"></ol>
+              </div>
+              <div class="crypto-side-rail">
+              <aside class="crypto-control-panel" aria-label="Crypto controls">
+                <div class="crypto-context-title">
+                  <span class="crypto-context-dot" aria-hidden="true"></span>
+                  <div><strong>CRYPTO</strong><small id="crypto-context-status">Connecting</small></div>
+                </div>
+                <span class="crypto-control-label">Mode</span>
+                <div class="crypto-mode" id="crypto-mode" role="group" aria-label="Crypto publishing mode">
+                  <button class="crypto-mode-button" type="button" data-crypto-mode="OFF" aria-pressed="false">Off</button>
+                  <button class="crypto-mode-button" type="button" data-crypto-mode="DRY_RUN" aria-pressed="true">Dry</button>
+                  <button class="crypto-mode-button" type="button" data-crypto-mode="AUTO" aria-pressed="false">Auto</button>
+                </div>
+                <dl class="crypto-summary-facts">
+                  <div><dt>AUTO</dt><dd id="crypto-mode-label">—</dd></div>
+                  <div><dt>Posts</dt><dd id="crypto-posts">—</dd></div>
+                  <div><dt>Scanner</dt><dd id="crypto-scanner">—</dd></div>
+                </dl>
+                <button class="crypto-dry-run" id="crypto-enable-auto" type="button">ENABLE AUTO</button>
+                <button class="crypto-dry-run" id="crypto-dry-run" type="button">Verify dry run</button>
+                <button class="crypto-dry-run" id="crypto-reset-post-limit" type="button">RESET 10/10</button>
+                <details class="crypto-details">
+                  <summary>System details</summary>
+                  <dl class="crypto-facts">
+                    <div><dt>Capacity</dt><dd id="crypto-slots">—</dd></div>
+                    <div><dt>Square</dt><dd id="crypto-credential">—</dd></div>
+                    <div><dt>Writer</dt><dd id="crypto-ai">—</dd></div>
+                    <div><dt>Ollama</dt><dd id="crypto-ollama">—</dd></div>
+                  </dl>
+                </details>
+              </aside>
+              <section class="crypto-latest-panel" aria-label="Latest Crypto events">
+                <div class="crypto-log-heading"><strong>Последние события</strong><small>Статус и решения</small></div>
+                <ol class="crypto-side-event-stream" id="crypto-side-event-stream" aria-label="Latest meaningful Crypto events" aria-live="polite"></ol>
+              </section>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <div class="composer-wrap">
+          <form class="composer" id="chat-form">
+            <ol class="queue-tray" id="queue-tray" aria-label="Очередь сообщений" hidden></ol>
+            <div class="composer-surface">
+              <div class="drag-overlay" id="drag-overlay" aria-hidden="true" hidden>Добавьте изображения</div>
+              <label class="visually-hidden" for="attachment-input">Выбрать изображения</label>
+              <input id="attachment-input" class="visually-hidden" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple />
+              <ul class="attachment-preview" id="attachment-preview" aria-label="Прикреплённые изображения" hidden></ul>
+              <label class="visually-hidden" for="message">Сообщение для JARVIS</label>
+              <textarea id="message" name="message" rows="1" maxlength="8000" placeholder="Спросите JARVIS о чём угодно…" autocomplete="off"></textarea>
+
+              <div class="composer-toolbar">
+                <div class="composer-modes" aria-label="Контекст запроса">
+                  <button class="mode-button attach-button" id="attach-button" type="button" aria-label="Прикрепить изображения" title="Прикрепить изображения">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 12.5 5.7-5.7a3 3 0 0 1 4.3 4.3l-7.9 7.8a5 5 0 0 1-7.1-7L12.3 3.6" /></svg>
+                  </button>
+                  <button class="mode-button" type="button" data-mode="files" aria-label="Файлы" aria-pressed="false">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5h6l2 2h8v9.5H4V7.5Z" /></svg><span>Файлы</span>
+                  </button>
+                  <button class="mode-button" type="button" data-mode="web" aria-label="Интернет" aria-pressed="false">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" /><path d="M4 12h16M12 4a13 13 0 0 1 0 16M12 4a13 13 0 0 0 0 16" /></svg><span>Интернет</span>
+                  </button>
+                  <button class="mode-button mic-button" id="mic-button" type="button" aria-label="Записать голос" title="Записать голос" aria-pressed="false">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6a3 3 0 0 1 6 0v6a3 3 0 0 1-6 0V6Z" /><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3M9 21h6" /></svg>
+                  </button>
+                  <span class="recording-timer" id="recording-timer" aria-label="Длительность записи" hidden>00:00</span>
+                </div>
+
+                <button class="send-button" id="send" type="submit" aria-label="Отправить сообщение" title="Отправить">
+                  <span id="send-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18V6M7 11l5-5 5 5" /></svg></span>
+                  <span id="check-icon" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 12 4 4 8-8" /></svg></span>
+                </button>
+              </div>
+              <p class="media-status" id="media-status" role="status" aria-live="polite"></p>
+            </div>
+            <div class="composer-hint" aria-hidden="true"><span><kbd>Enter</kbd> отправить</span><span><kbd>Shift Enter</kbd> новая строка</span></div>
+          </form>
+        </div>
+      </main>
+
+      <aside class="activity-panel" id="activity-panel" aria-label="Активность JARVIS" hidden>
+        <header class="activity-header">
+          <h2>Ход работы</h2>
+          <div class="activity-controls">
+            <button class="icon-button" id="activity-clear" type="button" aria-label="Очистить активность" title="Очистить активность">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5" /></svg>
+            </button>
+            <button class="icon-button" id="activity-toggle" type="button" aria-label="Свернуть активность" aria-expanded="true" title="Свернуть активность">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg>
+            </button>
+            <button class="icon-button" id="activity-close" type="button" aria-label="Закрыть активность" title="Закрыть активность">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17" /></svg>
+            </button>
+          </div>
+        </header>
+        <div class="activity-body">
+          <ol class="activity-steps" id="activity-steps" aria-live="polite" aria-relevant="additions text"></ol>
+        </div>
+      </aside>
+    </div>
+
+    <dialog class="approval-dialog" id="approval-dialog">
+      <form method="dialog" class="approval-card">
+        <div class="approval-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.7 2.9 8.1 7 10 4.1-1.9 7-5.3 7-10V6l-7-3Z" /><path d="M12 8v5M12 16.5v.1" /></svg>
+        </div>
+        <p class="dialog-kicker">Требуется подтверждение</p>
+        <h2>Проверить действие JARVIS</h2>
+        <p id="approval-reason">JARVIS запрашивает разрешение на действие.</p>
+        <div class="approval-command" id="approval-command"></div>
+        <div class="approval-actions">
+          <button class="button-secondary" id="approval-deny" value="deny">Отклонить</button>
+          <button class="button-primary" id="approval-allow" value="allow">Разрешить один раз</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="approval-dialog delete-all-dialog" id="delete-all-dialog" aria-labelledby="delete-all-title">
+      <div class="approval-card delete-all-card">
+        <div class="approval-icon delete-all-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5" /></svg>
+        </div>
+        <p class="dialog-kicker">Необратимое действие</p>
+        <h2 id="delete-all-title">Удалить всю историю?</h2>
+        <p>Будут удалены обычные диалоги и история Voice Commands. Crypto, настройки JARVIS и ваши файлы на компьютере останутся без изменений.</p>
+        <div class="delete-all-summary"><strong id="delete-all-count">0 диалогов</strong><span>После очистки откроется новый пустой диалог.</span></div>
+        <div class="approval-actions">
+          <button class="button-secondary" id="delete-all-cancel" type="button">Отмена</button>
+          <button class="button-primary button-danger" id="delete-all-confirm" type="button">Удалить всё</button>
+        </div>
+      </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-hidden="true"></div>
+    <script src="/app.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "jarvis-local-codex",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Локальный интерфейс для Codex App Server.",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test",
+    "test:parser": ".venv\\Scripts\\python.exe -m unittest discover -s parser_worker/tests -v && node --test test/parser-http.test.js test/parser-runtime.test.js test/parser-worker-integration.test.js test/parser-ui.test.js",
+    "check": "node --check src/server.js && node --check src/app-server-client.js && node --check src/jarvis-session.js && node --check src/execution-policy.js && node --check src/voice-policy.js && node --check src/voice-display.js && node --check src/parser/http.js && node --check src/parser/runtime.js && node --check src/crypto/config.js && node --check src/crypto/create-runtime.js && node --check src/crypto/runtime.js && node --check src/crypto/historical-replay.js && node --check src/crypto/live-dry-run.js && node --check src/crypto/content/ollama-writer.js && node --check src/crypto/content/anymodel-writer.js && node --check src/crypto/content/fact-pack.js && node --check src/crypto/content/trader-evidence-map.js && node --check src/crypto/content/story-brief.js && node --check src/crypto/content/public-text-format.js && node --check src/crypto/content/research-context.js && node --check src/crypto/content/review-package.js && node --check src/crypto/content/v4-editorial-pipeline.js && node --check src/crypto/content/v5-editorial-pipeline.js && node --check public/api.js && node --check public/app.js && node --check public/crypto-ui.js && node --check public/parser-ui.js",
+    "build:host": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/build-windows-host.ps1"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

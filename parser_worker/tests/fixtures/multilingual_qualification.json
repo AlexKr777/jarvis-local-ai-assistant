@@ -1,0 +1,50 @@
+[
+  {
+    "name": "russian client website request",
+    "text": "Нужен разработчик сделать сайт для компании.",
+    "expected_gate": "STRONG_CONTEXT_GATE",
+    "expected_reason": "INTENT_WITH_ENABLED_DOMAIN"
+  },
+  {
+    "name": "english Telegram Mini App request",
+    "text": "Can anyone build a Telegram Mini App for our restaurant?",
+    "expected_gate": "STRONG_CONTEXT_GATE",
+    "expected_reason": "INTENT_WITH_ENABLED_DOMAIN"
+  },
+  {
+    "name": "romanian backend hiring",
+    "text": "Angajăm dezvoltator backend pentru platforma noastră.",
+    "expected_gate": "STRONG_CONTEXT_GATE",
+    "expected_reason": "INTENT_WITH_ENABLED_DOMAIN"
+  },
+  {
+    "name": "english paid project availability",
+    "text": "Have a paid project for someone familiar with FastAPI; anyone available?",
+    "expected_gate": "WEAK_SEMANTIC_GATE",
+    "expected_reason": "PROJECT_AVAILABILITY_WITH_ENABLED_DOMAIN"
+  },
+  {
+    "name": "romanian project availability",
+    "text": "Avem un proiect Django. Cine este disponibil?",
+    "expected_gate": "WEAK_SEMANTIC_GATE",
+    "expected_reason": "PROJECT_AVAILABILITY_WITH_ENABLED_DOMAIN"
+  },
+  {
+    "name": "generic request without enabled service",
+    "text": "Нужно посмотреть окошко в бухгалтерии.",
+    "expected_gate": "NO_CONTEXT_GATE",
+    "expected_reason": "NO_ENABLED_SERVICE"
+  },
+  {
+    "name": "isolated service word",
+    "text": "Django.",
+    "expected_gate": "NO_CONTEXT_GATE",
+    "expected_reason": "ISOLATED_TECHNOLOGY"
+  },
+  {
+    "name": "unrelated embedded vacancy",
+    "text": "Hiring C++ embedded software engineer.",
+    "expected_gate": "NO_CONTEXT_GATE",
+    "expected_reason": "NO_ENABLED_SERVICE"
+  }
+]
