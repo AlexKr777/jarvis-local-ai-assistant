@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [main, portfolio-polish]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  node:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      # These three integration/benchmark files require intentionally ignored local
+      # speech fixtures or the Windows project-local Python environment.
+      - run: find test -name '*.test.js' ! -name 'speech-benchmark.test.js' ! -name 'transcription-service.test.js' ! -name 'parser-worker-integration.test.js' -print0 | xargs -0 node --test
